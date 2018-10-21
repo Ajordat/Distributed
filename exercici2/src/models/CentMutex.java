@@ -4,8 +4,6 @@ import network.Frame;
 import network.LamportData;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /**
  * @author Ajordat
@@ -13,7 +11,7 @@ import java.io.ObjectOutputStream;
  **/
 @SuppressWarnings("StatementWithEmptyBody")
 public class CentMutex extends BaseServer {
-	private static final int N = 3;
+	private static final int N = Role.HWA.getLightWeightCount();
 	private DirectClock v;
 	private int[] q;
 	private int id;
@@ -34,14 +32,14 @@ public class CentMutex extends BaseServer {
 	public void requestCS() throws IOException, ClassNotFoundException, InterruptedException {
 		v.tick();
 		q[id] = v.getValue(id);
-		broadcast(Frame.Type.REQUEST_CS, q[id]);
+		broadcast(broadcastAddresses, Frame.Type.REQUEST_CS, q[id]);
 		while (!okayCS())
 			Thread.sleep(500);
 	}
 
 	public void releaseCS() throws IOException, ClassNotFoundException {
 		q[id] = Integer.MAX_VALUE;
-		broadcast(Frame.Type.RELEASE_CS, v.getValue(id));
+		broadcast(broadcastAddresses, Frame.Type.RELEASE_CS, v.getValue(id));
 	}
 
 	private boolean okayCS() {
@@ -70,15 +68,4 @@ public class CentMutex extends BaseServer {
 		}
 	}
 
-	private void broadcast(Frame.Type type, int value) throws IOException, ClassNotFoundException {
-		for (int address : broadcastAddresses) {
-			verbose("Requesting to " + address);
-			request(address, type, new LamportData(role, value));
-		}
-	}
-
-	public void setStreams(ObjectInputStream input, ObjectOutputStream output) {
-		this.inputStream = input;
-		this.outputStream = output;
-	}
 }

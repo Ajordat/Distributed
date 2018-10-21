@@ -1,6 +1,7 @@
 package models;
 
 import network.Frame;
+import network.LamportData;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -127,5 +128,17 @@ public abstract class BaseServer {
 
 	protected void reply(Frame.Type type, Object data) throws IOException {
 		this.outputStream.writeObject(new Frame(type, data));
+	}
+
+	protected void broadcast(int[] addresses, Frame.Type type, int value) throws IOException, ClassNotFoundException {
+		for (int address : addresses) {
+			verbose("Requesting to " + address);
+			request(address, type, new LamportData(role, value));
+		}
+	}
+
+	public void setStreams(ObjectInputStream input, ObjectOutputStream output) {
+		this.inputStream = input;
+		this.outputStream = output;
 	}
 }

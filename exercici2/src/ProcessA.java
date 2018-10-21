@@ -27,7 +27,7 @@ public class ProcessA extends BaseServer {
 	private void action(Frame frame) throws IOException, ClassNotFoundException {
 
 		switch (frame.getType()) {
-			case SEND_TOKEN:
+			case TOKEN_BA:
 				// Receive the token from HWB and answer with REPLY_OK
 				this.reply(Frame.Type.REPLY_OK);
 
@@ -45,8 +45,7 @@ public class ProcessA extends BaseServer {
 				if (++this.nFinished == role.getLightWeightCount()) {
 
 					// If all children have finished using the shared resource, give the token back to HWB
-					//this.request(Role.HWB.getPort(), Frame.Type.SEND_TOKEN);
-					System.out.println("PROCESS A IN CHARGE OF THE COTARRO");
+					this.request(Role.HWB.getPort(), Frame.Type.TOKEN_AB);
 				}
 
 				return;

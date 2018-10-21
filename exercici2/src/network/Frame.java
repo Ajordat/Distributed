@@ -19,6 +19,9 @@ public class Frame implements Serializable {
 	 * Diferent tipus de trames que es poden transmetre.
 	 */
 	public enum Type {
+		TOKEN_AB,
+		TOKEN_BA,
+
 		SEND_TOKEN,
 		RETURN_TOKEN,
 
