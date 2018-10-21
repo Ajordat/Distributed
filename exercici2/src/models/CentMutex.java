@@ -25,24 +25,23 @@ public class CentMutex extends BaseServer {
 		this.broadcastAddresses = role.getBroadcastAddresses();
 		this.id = role.getIndex();
 		this.v = new DirectClock(N, id);
-		this.setVerbose();
+		//this.setVerbose();
 
 		for (int i = 0; i < N; i++)
 			q[i] = Integer.MAX_VALUE;
 	}
 
-	public void requestCS() throws IOException, ClassNotFoundException {
+	public void requestCS() throws IOException, ClassNotFoundException, InterruptedException {
 		v.tick();
 		q[id] = v.getValue(id);
 		broadcast(Frame.Type.REQUEST_CS, q[id]);
-		while (!okayCS()) ;
+		while (!okayCS())
+			Thread.sleep(500);
 	}
 
 	public void releaseCS() throws IOException, ClassNotFoundException {
 		q[id] = Integer.MAX_VALUE;
-		stderr("Releasing...");
 		broadcast(Frame.Type.RELEASE_CS, v.getValue(id));
-		stderr("Released");
 	}
 
 	private boolean okayCS() {

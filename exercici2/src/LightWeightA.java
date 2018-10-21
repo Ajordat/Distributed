@@ -18,7 +18,7 @@ public class LightWeightA extends BaseServer implements Runnable {
 	LightWeightA(Role role) {
 		this.role = role;
 		this.port = role.getPort();
-		this.setVerbose();
+		//this.setVerbose();
 		this.mutex = new CentMutex(role);
 	}
 
