@@ -51,7 +51,7 @@ Chain CHAIN_getMessagesFromTimestamp(Chain h, int timestamp) {
 	Chain messages = CHAIN_create();
 
 	for (index = 0; index < h.length; index++)
-		if (h.list[index].timestamp >= timestamp)
+		if (h.list[index].timestamp > timestamp)
 			CHAIN_add(&messages, h.list[index]);
 
 	return messages;

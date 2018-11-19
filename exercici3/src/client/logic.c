@@ -4,6 +4,7 @@
 
 #include <signal.h>
 #include <time.h>
+#include <pthread.h>
 #include "logic.h"
 
 char parseCli(WINDOW *w, char *author) {
@@ -36,40 +37,54 @@ char parseCli(WINDOW *w, char *author) {
 	return 0;
 }
 
-void updateChat(WINDOW *w, int timestamp) {
-	UNUSED(w);
+int updateChat(WINDOW *w, int timestamp) {
 
 	Chain *history = requestChat(timestamp);
 
-	if (history != NULL)
+	if (history != NULL) {
 		for (u_int i = 0; i < history->length; i++)
 			WIN_writeMsg(w, history->list[i]);
 
+		return history->list[history->length - 1].timestamp;
+	}
+
+	CHAIN_destroy(history);
+
+	return timestamp ?: 0;
 }
 
-inline void initChat(WINDOW *w) {
-	updateChat(w, 0);
+void *initChat(void *w) {
+	WINDOW *window = (WINDOW *) w;
+	int timestamp = updateChat(w, 0);
+
+	while (1) {
+		sleep(1);
+		timestamp = updateChat(window, timestamp);
+	}
 }
 
 
 void sigint_handler(int _) {
-	(void)_;
+	(void) _;
 	destroyRpc();
+	WIN_destroy();
 	exit(0);
 }
 
 void chatRoutine(char *host, char *author) {
 	char flag = 0;
 	WINDOW *window;
+	pthread_t thread;
 
 	signal(SIGINT, sigint_handler);
+
+	clnt = createRpc(host);
 
 	window = WIN_create();
 	WIN_write(window, "Welcome to this global chat!\n");
 
-	clnt = createRpc(host);
 
-	initChat(window);
+	pthread_create(&thread, NULL, initChat, (void *) window);
 
 	do {
 		flag = parseCli(window, author);

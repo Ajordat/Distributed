@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "chat.h"
+#include "chat_lib.h"
 
 bool_t
 xdr_Message (XDR *xdrs, Message *objp)

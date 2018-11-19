@@ -6,7 +6,7 @@
 #define _LOGIC_H_
 
 #include <time.h>
-#include "../rpc/chat.h"
+#include "../rpc/chat_lib.h"
 
 
 Chain history;

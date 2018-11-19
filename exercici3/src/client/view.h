@@ -7,11 +7,13 @@
 
 #include <time.h>
 #include <ncurses.h>
-#include "../rpc/chat.h"
+#include "../rpc/chat_lib.h"
 
-#define USE_NCURSES 1
+#define USE_NCURSES 0
 
 WINDOW *WIN_create();
+
+void WIN_destroy();
 
 void WIN_read(WINDOW *w, char *string);
 

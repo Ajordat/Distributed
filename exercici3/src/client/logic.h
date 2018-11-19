@@ -7,7 +7,7 @@
 
 
 #include <ncurses.h>
-#include "../rpc/chat.h"
+#include "../rpc/chat_lib.h"
 #include "../utils.h"
 #include "../tad/chain.h"
 #include "view.h"

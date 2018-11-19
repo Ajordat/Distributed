@@ -1,5 +1,5 @@
 CFLAGS = -Wall -Wextra -g -O5
-LIBS = chat.h
+LIBS = chat_lib.h
 SOURCES = chat_clnt.c chat_xdr.c
 
 FILES = $(SOURCES)

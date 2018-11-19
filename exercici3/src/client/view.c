@@ -11,6 +11,10 @@ inline WINDOW *WIN_create() {
 	return initscr();
 }
 
+inline void WIN_destroy() {
+	endwin();
+}
+
 inline void WIN_read(WINDOW *w, char *string) {
 	wgetstr(w, string);
 }
@@ -38,6 +42,8 @@ void WIN_writeMsg(WINDOW *w, Message msg) {
 inline WINDOW *WIN_create() {
 	return NULL;
 }
+
+inline void WIN_destroy() {}
 
 void WIN_read(WINDOW *w, char *string) {
 	UNUSED(w);

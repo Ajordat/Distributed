@@ -9,11 +9,11 @@ HEADERS = $(patsubst %,%.h, $(MODULES))
 
 
 all: $(FILES) $(HEADERS) $(RPC)
-	gcc -o obj/logic.o -c logic.c $(CFLAGS) -lncurses
+	gcc -o obj/logic.o -c logic.c $(CFLAGS) -lncurses -pthread
 	gcc -o obj/utils.o -c ../utils.c $(CFLAGS)
 	gcc -o obj/chain.o -c ../tad/chain.c $(CFLAGS)
 	gcc -o obj/view.o -c view.c $(CFLAGS)
-	gcc -o $(EXE) main.c obj/*.o ../rpc/obj/*.o $(CFLAGS) -lncurses
+	gcc -o $(EXE) main.c obj/*.o ../rpc/obj/*.o $(CFLAGS) -lncurses -pthread
 
 $(RPC):
 	make -C ../rpc --no-print-directory
