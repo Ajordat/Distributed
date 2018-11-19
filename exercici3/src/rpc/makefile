@@ -12,10 +12,9 @@ all: $(SOURCES) $(LIBS)
 
 $(SOURCES): chat.x
 	rpcgen chat.x
+	rm -f *_svc.c
 
 clean:
 	rm -f obj/*.o
-	rm -f *.c
-	rm -f *.h
 
 again: clean all

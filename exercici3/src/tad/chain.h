@@ -18,9 +18,11 @@ void CHAIN_add(Chain *, Message);
 
 Message CHAIN_createMessage(int timestamp, char *msg, char *author);
 
-Chain CHAIN_getMessagesFromTimestamp(Chain h, int timestamp);
+void CHAIN_destroyMessage(Message *);
 
-void CHAIN_toString(Chain h);
+Chain CHAIN_getMessagesFromTimestamp(Chain, int timestamp);
+
+void CHAIN_toString(Chain);
 
 void CHAIN_destroy(Chain *);
 

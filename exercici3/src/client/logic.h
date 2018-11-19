@@ -6,7 +6,7 @@
 #define _CLIENT_LOGIC_H_
 
 
-#include "ncurses.h"
+#include <ncurses.h>
 #include "../rpc/chat.h"
 #include "../utils.h"
 #include "../tad/chain.h"

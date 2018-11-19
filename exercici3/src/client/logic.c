@@ -2,6 +2,7 @@
 // Created by ajordat on 17/11/18.
 //
 
+#include <signal.h>
 #include <time.h>
 #include "logic.h"
 
@@ -12,6 +13,7 @@ char parseCli(WINDOW *w, char *author) {
 
 	WIN_write(w, "> ");
 
+	memset(string, '\0', LENGTH);
 	WIN_read(w, string);
 
 	timestamp = time(NULL);
@@ -29,15 +31,18 @@ char parseCli(WINDOW *w, char *author) {
 
 	WIN_refresh(w);
 
+	CHAIN_destroyMessage(&msg);
+
 	return 0;
 }
 
 void updateChat(WINDOW *w, int timestamp) {
+	UNUSED(w);
 
 	Chain *history = requestChat(timestamp);
 
 	if (history != NULL)
-		for (int i = 0; i < history->length; i++)
+		for (u_int i = 0; i < history->length; i++)
 			WIN_writeMsg(w, history->list[i]);
 
 }
@@ -47,7 +52,8 @@ inline void initChat(WINDOW *w) {
 }
 
 
-void sigintManager() {
+void sigint_handler(int _) {
+	(void)_;
 	destroyRpc();
 	exit(0);
 }
@@ -56,10 +62,10 @@ void chatRoutine(char *host, char *author) {
 	char flag = 0;
 	WINDOW *window;
 
-	signal(SIGINT, sigintManager);
+	signal(SIGINT, sigint_handler);
 
 	window = WIN_create();
-	printw("Welcome to this global chat!\n");
+	WIN_write(window, "Welcome to this global chat!\n");
 
 	clnt = createRpc(host);
 
@@ -89,7 +95,7 @@ CLIENT *createRpc(char *host) {
 }
 
 void destroyRpc() {
-	clnt_destroy (clnt);
+	clnt_destroy(clnt);
 }
 
 int writeMessage(Message msg) {

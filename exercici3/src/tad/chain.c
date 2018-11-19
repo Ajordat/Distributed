@@ -33,46 +33,49 @@ Message CHAIN_createMessage(int timestamp, char *msg, char *author) {
 	Message m;
 
 	m.timestamp = timestamp;
-	m.data = malloc(strlen(msg));
-	m.author = malloc(strlen(author));
+	m.data = malloc(strlen(msg) + 2);
+	m.author = malloc(strlen(author) + 2);
 	strcpy(m.data, msg);
 	strcpy(m.author, author);
 
 	return m;
 }
 
+void CHAIN_destroyMessage(Message *msg) {
+	free(msg->author);
+	free(msg->data);
+}
+
 Chain CHAIN_getMessagesFromTimestamp(Chain h, int timestamp) {
-	int index;
+	u_int index;
 	Chain messages = CHAIN_create();
 
-	for (index = 0; index < h.length && h.list[index].timestamp < timestamp; index++);
-
-	for (; index < h.length; index++)
-		CHAIN_add(&messages, h.list[index]);
+	for (index = 0; index < h.length; index++)
+		if (h.list[index].timestamp >= timestamp)
+			CHAIN_add(&messages, h.list[index]);
 
 	return messages;
 }
 
-
-#pragma GCC diagnostic ignored "-Wunused-result"
-
 void CHAIN_toString(Chain h) {
 	char aux[LENGTH];
 	print("toString\n");
-	sprintf(aux, "length: %d\n", h.length);
+	sprintf(aux, "CHAIN string: %d", h.length);
 	print(aux);
-	for (int i = 0; i < h.length; i++) {
-		write(1, h.list[i].data, strlen(h.list[i].data));
+	for (u_int i = 0; i < h.length; i++) {
+		print("\n-");
+		print(h.list[i].data);
 	}
-	print("end\n");
+	print("\nend\n");
 }
 
 void CHAIN_destroy(Chain *h) {
 
-	for (int i = 0; i < h->length; i++) {
+	for (u_int i = 0; i < h->length; i++) {
 		free(h->list[i].data);
 		free(h->list[i].author);
 	}
 
 	free(h->list);
+	h->length = 0;
 }

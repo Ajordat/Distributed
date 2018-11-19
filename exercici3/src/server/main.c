@@ -59,7 +59,9 @@ static void pgrm_chat_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 	}
 }
 
-void sigintManager() {
+void sigint_handler(int _) {
+	UNUSED(_);
+	print("catched sigint");
 	CHAIN_destroy(&history);
 	exit(0);
 }
@@ -92,7 +94,7 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	signal(SIGINT, sigintManager);
+	signal(SIGINT, sigint_handler);
 	history = CHAIN_create();
 
 	svc_run();

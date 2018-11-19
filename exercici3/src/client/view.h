@@ -9,7 +9,7 @@
 #include <ncurses.h>
 #include "../rpc/chat.h"
 
-#define USE_NCURSES 0
+#define USE_NCURSES 1
 
 WINDOW *WIN_create();
 

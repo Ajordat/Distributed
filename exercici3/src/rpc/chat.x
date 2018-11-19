@@ -4,10 +4,7 @@ struct Message {
 	int timestamp;
 };
 
-struct Chain {
-	int length;
-	Message *list;
-};
+typedef Message Chain<>;
 
 program PGRM_CHAT {
 	version V_CHAT {

@@ -1,4 +1,3 @@
-SHELL := /bin/bash
 
 all:
 	make -C rpc --no-print-directory
