@@ -7,59 +7,65 @@
 #include <pthread.h>
 #include "logic.h"
 
-char parseCli(WINDOW *w, char *author) {
+char parseCli(char *author) {
 	char string[LENGTH];
 	time_t timestamp;
 	Message msg;
 
-	WIN_write(w, "> ");
+	WIN_write(input, "> ");
 
 	memset(string, '\0', LENGTH);
-	WIN_read(w, string);
+	WIN_read(input, string);
 
 	timestamp = time(NULL);
 
 	if (strcasecmp(string, "exit") == 0)
 		return 1;
 
-	wmove(w, getcury(w) - 1, 0);
-	wclrtoeol(w);
+	//wmove(w, getcury(w), 0);
+	wclrtoeol(input);
 
 	msg = CHAIN_createMessage((int) timestamp, string, author);
-	WIN_writeMsg(w, msg);
+	//WIN_writeMsg(w, msg);
 
 	writeMessage(msg);
 
-	WIN_refresh(w);
+	//WIN_refresh(w);
 
 	CHAIN_destroyMessage(&msg);
 
 	return 0;
 }
 
-int updateChat(WINDOW *w, int timestamp) {
+int updateChat(int timestamp) {
 
 	Chain *history = requestChat(timestamp);
 
 	if (history != NULL) {
 		for (u_int i = 0; i < history->length; i++)
-			WIN_writeMsg(w, history->list[i]);
+			WIN_writeMsg(display, history->list[i]);
 
-		return history->list[history->length - 1].timestamp;
+
+		if (history->length > 0) {
+			wrefresh(display);
+			wrefresh(input);
+			timestamp = history->list[history->length - 1].timestamp;
+		}
+
+		CHAIN_destroy(history);
 	}
 
-	CHAIN_destroy(history);
 
 	return timestamp ?: 0;
 }
 
-void *initChat(void *w) {
-	WINDOW *window = (WINDOW *) w;
-	int timestamp = updateChat(w, 0);
+void *initChat(void *_) {
+	UNUSED(_);
+	int timestamp = 0;
 
 	while (1) {
+		timestamp = updateChat(timestamp);
 		sleep(1);
-		timestamp = updateChat(window, timestamp);
 	}
 }
 
@@ -73,21 +79,35 @@ void sigint_handler(int _) {
 
 void chatRoutine(char *host, char *author) {
 	char flag = 0;
-	WINDOW *window;
 	pthread_t thread;
 
 	signal(SIGINT, sigint_handler);
 
 	clnt = createRpc(host);
 
-	window = WIN_create();
-	WIN_write(window, "Welcome to this global chat!\n");
+	display = WIN_create();
+	input = newwin(2, 0, LINES - 2, 0);
+	//scrollok(display, true);
+	refresh();
+	//box(input, 0, 0);
 
 
-	pthread_create(&thread, NULL, initChat, (void *) window);
+	//WIN_write(display, "Welcome to this global chat!\n");
+	wprintw(display, "Welcome to this global chat!\n");
+	refresh();
+
+	pthread_create(&thread, NULL, initChat, NULL);
+	//initChat(display);
+/*	int timestamp = updateChat(window, 0);
+
+	while (1) {
+		sleep(1);
+		print("asdf\n");
+		timestamp = updateChat(window, timestamp);
+	}*/
 
 	do {
-		flag = parseCli(window, author);
+		flag = parseCli(author);
 	} while (!flag);
 
 
