@@ -14,7 +14,7 @@
 WINDOW *display;
 WINDOW *input;
 
-WINDOW *WIN_create();
+void WIN_create();
 
 void WIN_destroy();
 
@@ -25,5 +25,7 @@ void WIN_write(WINDOW *w, char *string);
 void WIN_refresh(WINDOW *w);
 
 void WIN_writeMsg(WINDOW *w, Message msg);
+
+void WIN_cleanLine(WINDOW *w);
 
 #endif

@@ -8,6 +8,7 @@
 #include <time.h>
 #include "../rpc/chat_lib.h"
 
+#define HISTORY_FILE "history.txt"
 
 Chain history;
 
@@ -25,6 +26,8 @@ Chain CHAIN_getMessagesFromTimestamp(Chain, int timestamp);
 void CHAIN_toString(Chain);
 
 void CHAIN_destroy(Chain *);
+
+void CHAIN_loadFromFile(Chain *, char *filename);
 
 
 #endif

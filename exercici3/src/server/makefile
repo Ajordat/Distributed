@@ -1,7 +1,6 @@
 CFLAGS = -Wall -Wextra -g -O5
 MAIN = main.c
-MODULES = ../utils ../tad/chain
-SOURCES = logic.c
+MODULES = logic ../utils ../tad/chain
 RPC = ../rpc/chat.h ../rpc/chat_xdr.c
 EXE = server
 

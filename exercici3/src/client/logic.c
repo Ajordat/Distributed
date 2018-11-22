@@ -22,15 +22,11 @@ char parseCli(char *author) {
 	if (strcasecmp(string, "exit") == 0)
 		return 1;
 
-	//wmove(w, getcury(w), 0);
-	wclrtoeol(input);
+	WIN_cleanLine(input);
 
 	msg = CHAIN_createMessage((int) timestamp, string, author);
-	//WIN_writeMsg(w, msg);
 
 	writeMessage(msg);
-
-	//WIN_refresh(w);
 
 	CHAIN_destroyMessage(&msg);
 
@@ -45,7 +41,6 @@ int updateChat(int timestamp) {
 		for (u_int i = 0; i < history->length; i++)
 			WIN_writeMsg(display, history->list[i]);
 
-
 		if (history->length > 0) {
 			wrefresh(display);
 			wrefresh(input);
@@ -54,7 +49,6 @@ int updateChat(int timestamp) {
 
 		CHAIN_destroy(history);
 	}
-
 
 	return timestamp ?: 0;
 }
@@ -85,26 +79,16 @@ void chatRoutine(char *host, char *author) {
 
 	clnt = createRpc(host);
 
-	display = WIN_create();
-	input = newwin(2, 0, LINES - 2, 0);
-	//scrollok(display, true);
+	WIN_create();
+	scrollok(display, true);
 	refresh();
 	//box(input, 0, 0);
 
 
-	//WIN_write(display, "Welcome to this global chat!\n");
-	wprintw(display, "Welcome to this global chat!\n");
+	WIN_write(display, "Welcome to this global chat!\n");
 	refresh();
 
 	pthread_create(&thread, NULL, initChat, NULL);
-	//initChat(display);
-/*	int timestamp = updateChat(window, 0);
-
-	while (1) {
-		sleep(1);
-		print("asdf\n");
-		timestamp = updateChat(window, timestamp);
-	}*/
 
 	do {
 		flag = parseCli(author);

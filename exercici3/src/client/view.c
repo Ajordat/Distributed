@@ -7,8 +7,10 @@
 
 #if USE_NCURSES
 
-inline WINDOW *WIN_create() {
-	return initscr();
+inline void WIN_create() {
+
+	display = initscr();
+	input = newwin(2, 0, LINES - 2, 0);
 }
 
 inline void WIN_destroy() {
@@ -35,6 +37,11 @@ void WIN_writeMsg(WINDOW *w, Message msg) {
 	strftime(time, 20, "%d-%m-%y %H:%M", localtime(&ts));
 	sprintf(aux,"%s ~ %s > %s\n", time, msg.author, msg.data);
 	WIN_write(w, aux);
+}
+
+void WIN_cleanLine(WINDOW *w) {
+	wmove(w, getcury(w) - 1, 0);
+	wclrtoeol(w);
 }
 
 #else
