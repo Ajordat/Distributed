@@ -4,6 +4,7 @@ package models;
  * @author Ajordat
  * @version 1.0
  **/
+@SuppressWarnings("WeakerAccess")
 public class DirectClock {
 	private int[] clock;
 	private int id;
@@ -17,8 +18,8 @@ public class DirectClock {
 		clock[id] = 1;
 	}
 
-	public int getValue(int i) {
-		return clock[i];
+	public int getValue(int index) {
+		return clock[index];
 	}
 
 	public void tick() {

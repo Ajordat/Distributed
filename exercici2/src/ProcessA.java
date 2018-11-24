@@ -79,6 +79,9 @@ public class ProcessA extends BaseServer {
 			this.notifyLWThreads();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
+			this.close();
+			this.isOn = false;
+			return;
 		}
 
 		try {

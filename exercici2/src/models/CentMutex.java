@@ -60,8 +60,8 @@ public class CentMutex extends BaseServer {
 		v.receiveAction(src.getIndex(), msg);
 
 		if (type == Frame.Type.REQUEST_CS) {
-			q[src.getIndex()] = msg;
 			this.reply(Frame.Type.ACKNOWLEDGE, new LamportData(role, v.getValue(id)));
+			q[src.getIndex()] = msg;
 		} else if (type == Frame.Type.RELEASE_CS) {
 			this.reply(Frame.Type.REPLY_OK);
 			q[src.getIndex()] = Integer.MAX_VALUE;

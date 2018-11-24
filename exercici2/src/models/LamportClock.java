@@ -1,11 +1,11 @@
 package models;
 
-import network.LamportData;
 
 /**
  * @author Ajordat
  * @version 1.0
  **/
+@SuppressWarnings("WeakerAccess")
 public class LamportClock {
 	int c;
 
