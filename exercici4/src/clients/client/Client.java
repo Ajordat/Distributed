@@ -56,7 +56,7 @@ public class Client extends BaseServer {
 				Frame response = this.request(targetNode.getPort(), Frame.Type.REQUEST_CLIENT, transaction);
 				logger.debug("Frame received");
 				logger.debug(response.getData().toString());
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (IOException | ClassNotFoundException e) {
 				logger.error("Couldn't reach node " + targetNode + ".");
 			} catch (InterruptedException e) {

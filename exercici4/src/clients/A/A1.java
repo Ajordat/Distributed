@@ -37,7 +37,9 @@ public class A1 extends BaseNode {
 				this.handler.setValue(variable, value);
 			} else {
 				variable = Integer.parseInt(action.substring(2, action.length() - 1));
-				logger.print("Read variable " + variable + ": " + this.handler.getValue(variable));
+				logger.print("Read variable " + variable);
+				value = this.handler.getValue(variable);
+				logger.print("Found: " + value);
 			}
 		}
 
