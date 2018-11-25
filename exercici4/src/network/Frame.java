@@ -19,18 +19,11 @@ public class Frame implements Serializable {
 	 * Diferent tipus de trames que es poden transmetre.
 	 */
 	public enum Type {
-		TOKEN_AB,
-		TOKEN_BA,
+		REQUEST_CLIENT,
+		REPLY_CLIENT,
 
-		SEND_TOKEN,
-		RETURN_TOKEN,
-
-		REPLY_OK,
-		REPLY_KO,
-
-		REQUEST_CS,
-		RELEASE_CS,
-		ACKNOWLEDGE
+		POST_AA,
+		REPLY_AA
 	}
 
 	public Frame(Type type, Object data) {
@@ -51,7 +44,7 @@ public class Frame implements Serializable {
 		return data;
 	}
 
-	public boolean isKO() {
+/*	public boolean isKO() {
 		return this.type == Type.REPLY_KO;
-	}
+	}*/
 }

@@ -11,18 +11,18 @@ import java.net.Socket;
  **/
 public abstract class BaseNode extends BaseServer {
 	protected Role role;
-	protected Logger log;
+	protected Logger logger;
 
 	public BaseNode(Role role) {
 		this.role = role;
 		this.port = role.getPort();
-		this.log = new Logger(role.toString(), false);
+		this.logger = new Logger(false, role.toString());
 	}
 
 	public BaseNode(Role role, boolean verbose) {
 		this.role = role;
 		this.port = role.getPort();
-		this.log = new Logger(role.toString(), verbose);
+		this.logger = new Logger(verbose, role.toString());
 	}
 
 	protected void startRoutine() {
@@ -34,15 +34,15 @@ public abstract class BaseNode extends BaseServer {
 
 		try {
 			while (this.isOn) {
-				log.verbose("Waiting new connections...");
+				logger.debug("Waiting new connections...");
 				Socket client = this.server.accept();
-				log.verbose("New connection received on port " + this.port);
+				logger.debug("New connection received on port " + this.port);
 
 				this.loadStreams(client);
 				this.action((Frame) this.inputStream.readObject());
 
 				client.close();
-				log.verbose("New connection finished.");
+				logger.debug("New connection finished.");
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			this.isOn = false;

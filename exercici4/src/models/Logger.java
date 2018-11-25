@@ -4,25 +4,30 @@ package models;
  * @author Ajordat
  * @version 1.0
  **/
-class Logger {
-	private boolean verbose;
+public class Logger {
+	private boolean debug;
 	private String header;
 
-	Logger(String header, boolean verbose) {
-		this.verbose = verbose;
+	public Logger(boolean debug, String header) {
+		this.debug = debug;
 		this.header = "[" + header + "] ";
 	}
 
-	private void print(String string) {
+	public Logger(boolean debug) {
+		this.debug = debug;
+		this.header = "";
+	}
+
+	public void print(String string) {
 		System.out.println(header + string);
 	}
 
-	final void verbose(String string) {
-		if (verbose)
+	public final void debug(String string) {
+		if (debug)
 			print(string);
 	}
 
-	final void error(String string) {
+	public final void error(String string) {
 		System.err.println(header + string);
 	}
 }
