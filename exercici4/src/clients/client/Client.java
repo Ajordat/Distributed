@@ -46,7 +46,12 @@ public class Client extends BaseServer {
 			logger.debug(line);
 
 			int index = line.indexOf(',');
-			transaction = line.substring(index + 1, line.length() - 2);
+			try {
+				transaction = line.substring(index + 1, line.length() - 2);
+			} catch (StringIndexOutOfBoundsException e) {
+				logger.debug("Empty transaction");
+				continue;
+			}
 			target = line.substring(1, index);
 
 			targetNode = decideNode(target.isEmpty() ? 0 : Integer.parseInt(target));

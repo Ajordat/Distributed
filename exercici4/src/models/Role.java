@@ -19,6 +19,22 @@ public enum Role {
 		return port;
 	}
 
+	public Role[] getBroadcastNodes() {
+		switch (this) {
+			case A1: return new Role[]{A2, A3};
+			case A2: return new Role[]{A1, A3};
+			case A3: return new Role[]{A1, A2};
+
+			case B1: return new Role[]{B2};
+			case B2: return new Role[]{B1};
+
+			case C1: return new Role[]{C2};
+			case C2: return new Role[]{C1};
+
+			default: return new Role[]{};
+		}
+	}
+
 	public int[] getBroadcastAddresses() {
 		switch (this) {
 			case A1:

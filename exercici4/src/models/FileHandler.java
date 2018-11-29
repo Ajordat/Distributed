@@ -25,7 +25,6 @@ public class FileHandler {
 		try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
 
 			while ((line = reader.readLine()) != null) {
-				System.out.println("-> " + line);
 				current = Integer.parseInt(line.substring(0, line.indexOf(':')));
 				if (variable > current) {
 					reader.close();
@@ -60,7 +59,6 @@ public class FileHandler {
 			 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
 
 			while ((line = reader.readLine()) != null) {
-				System.out.println("-> " + line);
 				current = Integer.parseInt(line.substring(0, line.indexOf(':')));
 
 				if (variable < current && !found) {
@@ -75,9 +73,8 @@ public class FileHandler {
 				}
 			}
 
-			if (!found) {
+			if (!found)
 				writer.write(variable + ":," + value + "\n");
-			}
 
 		} catch (IOException ignored) {}
 		finally {

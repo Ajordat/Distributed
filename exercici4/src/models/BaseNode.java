@@ -14,9 +14,7 @@ public abstract class BaseNode extends BaseServer {
 	protected Logger logger;
 
 	public BaseNode(Role role) {
-		this.role = role;
-		this.port = role.getPort();
-		this.logger = new Logger(false, role.toString());
+		this(role, false);
 	}
 
 	public BaseNode(Role role, boolean verbose) {
@@ -25,7 +23,7 @@ public abstract class BaseNode extends BaseServer {
 		this.logger = new Logger(verbose, role.toString());
 	}
 
-	protected void startRoutine() {
+	public void startRoutine() {
 
 		if (!this.open())
 			return;
@@ -40,8 +38,8 @@ public abstract class BaseNode extends BaseServer {
 
 				this.loadStreams(client);
 				this.action((Frame) this.inputStream.readObject());
+				this.closeStreams(client);
 
-				client.close();
 				logger.debug("New connection finished.");
 			}
 		} catch (IOException | ClassNotFoundException e) {
@@ -51,5 +49,5 @@ public abstract class BaseNode extends BaseServer {
 		this.close();
 	}
 
-	protected abstract void action(Frame frame) throws IOException;
+	protected abstract void action(Frame frame) throws IOException, ClassNotFoundException;
 }
