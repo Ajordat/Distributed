@@ -58,6 +58,10 @@ public enum Role {
 		return new int[]{};
 	}
 
+	public static Role[] getArray() {
+		return new Role[]{A1, A2, A3, B1, B2, C1, C2};
+	}
+
 	@Override
 	public String toString() {
 		return this.name();

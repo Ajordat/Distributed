@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Ajordat
@@ -25,7 +26,16 @@ public class Client extends BaseServer {
 	}
 
 	private Role decideNode(int layer) {
-		return Role.A1;
+		int pos;
+
+		if (layer == 0)
+			pos = ThreadLocalRandom.current().nextInt(0, 3);
+		else if (layer == 1)
+			pos = ThreadLocalRandom.current().nextInt(3, 2);
+		else
+			pos = ThreadLocalRandom.current().nextInt(5, 2);
+
+		return Role.getArray()[pos];
 	}
 
 	private void startRoutine() {

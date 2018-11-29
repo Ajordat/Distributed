@@ -57,7 +57,7 @@ public abstract class NodeA extends BaseNode {
 			case REQUEST_CLIENT:
 				writeTransactions = solveClientRequest((String) frame.getData());
 
-				if (writeTransactions.length() > 0)
+				if (!writeTransactions.isEmpty())
 					for (Role node : this.role.getBroadcastNodes()) {
 						response = request(node.getPort(), Frame.Type.POST_AA, writeTransactions);
 
