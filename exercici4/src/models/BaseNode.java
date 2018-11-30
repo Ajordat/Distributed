@@ -25,8 +25,10 @@ public abstract class BaseNode extends BaseServer {
 
 	public void startRoutine() {
 
-		if (!this.open())
-			return;
+		if (!this.open()) {
+			logger.error("Couldn't open server on port " + role.getPort());
+			System.exit(1);
+		}
 
 		this.isOn = true;
 

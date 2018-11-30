@@ -12,6 +12,9 @@ public class A1 extends NodeA {
 		super(Role.A1);
 	}
 
+	@Override
+	void afterTransaction() {}
+
 	public static void main(String[] args) {
 		NodeA node = new A1();
 

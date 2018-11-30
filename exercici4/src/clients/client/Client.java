@@ -4,7 +4,6 @@ import models.BaseServer;
 import models.Logger;
 import models.Role;
 import network.Frame;
-import network.ReplyData;
 
 import java.io.File;
 import java.io.FileNotFoundException;

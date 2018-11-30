@@ -9,7 +9,7 @@ import models.Role;
 public class A2 extends NodeA {
 
 	private A2() {
-		super(Role.A2);
+		super(Role.A2, Role.B1);
 	}
 
 	public static void main(String[] args) {
@@ -17,4 +17,5 @@ public class A2 extends NodeA {
 
 		node.startRoutine();
 	}
+
 }

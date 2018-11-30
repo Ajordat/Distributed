@@ -9,7 +9,7 @@ import models.Role;
 public class A3 extends NodeA {
 
 	private A3() {
-		super(Role.A3);
+		super(Role.A3, Role.B2);
 	}
 
 	public static void main(String[] args) {
