@@ -13,7 +13,7 @@ public class A1 extends NodeA {
 	}
 
 	@Override
-	void afterTransaction() {}
+	void afterTransaction(String transactions) {}
 
 	public static void main(String[] args) {
 		NodeA node = new A1();

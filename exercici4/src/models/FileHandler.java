@@ -26,16 +26,16 @@ public class FileHandler {
 
 			while ((line = reader.readLine()) != null) {
 				current = Integer.parseInt(line.substring(0, line.indexOf(':')));
-				if (variable > current) {
-					reader.close();
+
+				if (variable < current)
 					return -1;
-				} else if (variable == current) {
-					reader.close();
+				else if (variable == current)
 					return Integer.parseInt(line.substring(line.lastIndexOf(',') + 1));
-				}
 			}
 
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		return -1;
 	}
@@ -76,8 +76,8 @@ public class FileHandler {
 			if (!found)
 				writer.write(variable + ":," + value + "\n");
 
-		} catch (IOException ignored) {}
-		finally {
+		} catch (IOException ignored) {
+		} finally {
 			inputFile.delete();
 			tempFile.renameTo(inputFile);
 		}

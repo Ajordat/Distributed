@@ -46,6 +46,8 @@ public abstract class BaseNode extends BaseServer {
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			this.isOn = false;
+			logger.error("Server failure on port " + role.getPort());
+			System.exit(1);
 		}
 
 		this.close();

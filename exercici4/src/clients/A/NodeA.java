@@ -3,6 +3,7 @@ package clients.A;
 import models.BaseNode;
 import models.FileHandler;
 import models.Role;
+import models.TransactionResults;
 import network.Frame;
 
 import java.io.IOException;
@@ -14,28 +15,33 @@ import java.io.IOException;
 public abstract class NodeA extends BaseNode {
 	private final static int MAX_TRANSACTIONS = 2;
 	private FileHandler fileHandler;
-	private int nTransactions;
+	private int transactionsCounter;
+	private String transactionsData;
 	private Role lowerNode;
 
 	NodeA(Role role, Role lowerNode) {
 		super(role, true);
 		this.fileHandler = new FileHandler(role.toString() + ".log");
-		this.nTransactions = 0;
 		this.lowerNode = lowerNode;
+
+		this.transactionsCounter = 0;
+		this.transactionsData = "";
 	}
 
 	NodeA(Role role) {
 		this(role, null);
 	}
 
-	private String solveClientRequest(String data) {
+	private TransactionResults solveClientRequest(String data) {
 		String[] actions = data.split(",(?![^(]*\\))");
 		StringBuilder writeTransactions = new StringBuilder();
+		StringBuilder readTransactions = new StringBuilder();
 		int index, variable, value;
 
 		logger.debug("Received: [" + data + "]");
 
 		for (String action : actions) {
+			logger.debug(action);
 
 			if (action.charAt(0) == 'w') {
 				index = action.indexOf(',');
@@ -43,34 +49,40 @@ public abstract class NodeA extends BaseNode {
 				value = Integer.parseInt(action.substring(index + 1, action.length() - 1));
 				logger.print("Write " + value + " on variable " + variable + ".");
 				fileHandler.setValue(variable, value);
-				writeTransactions.append(action).append(",");
+
+				if (!writeTransactions.toString().isEmpty())
+					writeTransactions.append(',');
+				writeTransactions.append(action);
 
 			} else {
 				variable = Integer.parseInt(action.substring(2, action.length() - 1));
 				value = this.fileHandler.getValue(variable);
 				logger.print("Read variable " + variable + ": " + value);
+
+				if (!readTransactions.toString().isEmpty())
+					readTransactions.append(',');
+				readTransactions.append("r(").append(variable).append(',').append(value).append(")");
 			}
 		}
 
-		return writeTransactions.toString();
+		return new TransactionResults(writeTransactions.toString(), readTransactions.toString());
 	}
 
 	@Override
 	protected void action(Frame frame) throws IOException, ClassNotFoundException {
 		Frame response;
+		TransactionResults results;
 		String writeTransactions;
 
 		switch (frame.getType()) {
 
 			case REQUEST_CLIENT:
-				writeTransactions = solveClientRequest((String) frame.getData());
+				results = solveClientRequest((String) frame.getData());
 
-				if (!writeTransactions.isEmpty()) {
-
-					writeTransactions = "b," + writeTransactions + "c";
+				if (results.hasWriteResults()) {
 
 					for (Role node : this.role.getBroadcastNodes()) {
-						response = request(node.getPort(), Frame.Type.POST_AA, writeTransactions);
+						response = request(node.getPort(), Frame.Type.POST_AA, results.getWriteResult());
 
 						if (response.getType() == Frame.Type.REPLY_AA && (boolean) response.getData())
 							logger.debug("NODE " + node + " CONFIRMED");
@@ -79,32 +91,46 @@ public abstract class NodeA extends BaseNode {
 					}
 				}
 
-				reply(Frame.Type.REPLY_CLIENT, true);
+				reply(Frame.Type.REPLY_CLIENT, results.getReadResult());
+
+				afterTransaction(results.getWriteResult());
 				break;
 
 			case POST_AA:
-				logger.print((String) frame.getData());
+				writeTransactions = (String) frame.getData();
+				logger.print(writeTransactions);
+				solveClientRequest(writeTransactions);
 				reply(Frame.Type.REPLY_AA, true);
+
+				afterTransaction(writeTransactions);
 				break;
 
 			default:
 				reply(Frame.Type.REPLY_KO);
 		}
 
-		afterTransaction();
 	}
 
-	void afterTransaction() throws IOException, ClassNotFoundException {
+	void afterTransaction(String transactions) throws IOException, ClassNotFoundException {
 		Frame response;
 
-		if (++nTransactions >= MAX_TRANSACTIONS) {
-			response = request(lowerNode.getPort(), Frame.Type.POST_AB);
+		if (!this.transactionsData.isEmpty())
+			this.transactionsData += ',';
+		this.transactionsData += transactions;
+		this.transactionsCounter++;
+
+		if (transactionsCounter >= MAX_TRANSACTIONS) {
+			response = request(lowerNode.getPort(), Frame.Type.POST_AB, transactionsData);
 
 			if (response.getType() == Frame.Type.REPLY_BA && (boolean) response.getData()) {
 				logger.debug(lowerNode + " confirmed the transaction");
 			} else {
 				logger.debug(lowerNode + " denied the transaction");
 			}
+
+			this.transactionsCounter = 0;
+			this.transactionsData = "";
 		}
 	}
+
 }
