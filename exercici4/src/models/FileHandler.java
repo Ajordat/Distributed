@@ -66,7 +66,10 @@ public class FileHandler {
 					writer.write(line + "\n");
 					found = true;
 				} else if (variable == current) {
-					writer.write(line + "," + value + "\n");
+					if (value != Integer.parseInt(line.substring(line.lastIndexOf(',') + 1)))
+						writer.write(line + "," + value + "\n");
+					else
+						writer.write(line + "\n");
 					found = true;
 				} else {
 					writer.write(line + "\n");
@@ -81,6 +84,32 @@ public class FileHandler {
 			inputFile.delete();
 			tempFile.renameTo(inputFile);
 		}
+	}
 
+	public String toTransaction() {
+		String line;
+		String variable, value;
+		File input = new File(filename);
+		StringBuilder transaction = new StringBuilder();
+
+		if (!input.exists())
+			return "";
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
+
+			while ((line = reader.readLine()) != null) {
+				variable = line.substring(0, line.indexOf(':'));
+				value = line.substring(line.lastIndexOf(',') + 1);
+
+				if (!transaction.toString().isEmpty())
+					transaction.append(',');
+				transaction.append("w(").append(variable).append(",").append(value).append(")");
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return transaction.toString();
 	}
 }

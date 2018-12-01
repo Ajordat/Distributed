@@ -1,6 +1,6 @@
 package clients.A;
 
-import models.Role;
+import models.Node;
 
 /**
  * @author Ajordat
@@ -9,7 +9,7 @@ import models.Role;
 public class A3 extends NodeA {
 
 	private A3() {
-		super(Role.A3, Role.B2);
+		super(Node.A3, Node.B2);
 	}
 
 	public static void main(String[] args) {

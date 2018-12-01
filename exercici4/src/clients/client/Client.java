@@ -2,7 +2,7 @@ package clients.client;
 
 import models.BaseServer;
 import models.Logger;
-import models.Role;
+import models.Node;
 import network.Frame;
 
 import java.io.File;
@@ -24,7 +24,7 @@ public class Client extends BaseServer {
 		this.logger = new Logger(false, "CLI");
 	}
 
-	private Role decideNode(int layer) {
+	private Node decideNode(int layer) {
 		int pos;
 
 		if (layer == 0)
@@ -34,12 +34,12 @@ public class Client extends BaseServer {
 		else
 			pos = ThreadLocalRandom.current().nextInt(5, 7);
 
-		return Role.getArray()[pos];
+		return Node.getArray()[pos];
 	}
 
 	private void startRoutine() {
 		Scanner scanner = null;
-		Role targetNode;
+		Node targetNode;
 		String line, transaction, target;
 
 		try {
@@ -84,7 +84,7 @@ public class Client extends BaseServer {
 		scanner.close();
 	}
 
-	private void printTransactionResults(Role target, String transaction, String response) {
+	private void printTransactionResults(Node target, String transaction, String response) {
 		String[] actions = transaction.split(",(?![^(]*\\))");
 		String[] results = response.split(",(?![^(]*\\))");
 		int i = 0, index, variable, value;

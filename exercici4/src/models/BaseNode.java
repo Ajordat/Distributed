@@ -10,23 +10,23 @@ import java.net.Socket;
  * @version 1.0
  **/
 public abstract class BaseNode extends BaseServer {
-	protected Role role;
+	protected Node node;
 	protected Logger logger;
 
-	public BaseNode(Role role) {
-		this(role, false);
+	public BaseNode(Node node) {
+		this(node, false);
 	}
 
-	public BaseNode(Role role, boolean verbose) {
-		this.role = role;
-		this.port = role.getPort();
-		this.logger = new Logger(verbose, role.toString());
+	public BaseNode(Node node, boolean verbose) {
+		this.node = node;
+		this.port = node.getPort();
+		this.logger = new Logger(verbose, node.toString());
 	}
 
 	public void startRoutine() {
 
 		if (!this.open()) {
-			logger.error("Couldn't open server on port " + role.getPort());
+			logger.error("Couldn't open server on port " + node.getPort());
 			System.exit(1);
 		}
 
@@ -46,7 +46,7 @@ public abstract class BaseNode extends BaseServer {
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			this.isOn = false;
-			logger.error("Server failure on port " + role.getPort());
+			logger.error("Server failure on port " + node.getPort());
 			System.exit(1);
 		}
 

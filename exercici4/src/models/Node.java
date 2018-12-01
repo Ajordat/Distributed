@@ -1,6 +1,6 @@
 package models;
 
-public enum Role {
+public enum Node {
 	A1(3000),
 	A2(3001),
 	A3(3002),
@@ -11,7 +11,7 @@ public enum Role {
 
 	private final int port;
 
-	Role(int port) {
+	Node(int port) {
 		this.port = port;
 	}
 
@@ -19,19 +19,19 @@ public enum Role {
 		return port;
 	}
 
-	public Role[] getBroadcastNodes() {
+	public Node[] getBroadcastNodes() {
 		switch (this) {
-			case A1: return new Role[]{A2, A3};
-			case A2: return new Role[]{A1, A3};
-			case A3: return new Role[]{A1, A2};
+			case A1: return new Node[]{A2, A3};
+			case A2: return new Node[]{A1, A3};
+			case A3: return new Node[]{A1, A2};
 
-			case B1: return new Role[]{B2};
-			case B2: return new Role[]{B1};
+			case B1: return new Node[]{B2};
+			case B2: return new Node[]{B1};
 
-			case C1: return new Role[]{C2};
-			case C2: return new Role[]{C1};
+			case C1: return new Node[]{C2};
+			case C2: return new Node[]{C1};
 
-			default: return new Role[]{};
+			default: return new Node[]{};
 		}
 	}
 
@@ -51,8 +51,8 @@ public enum Role {
 		return new int[]{};
 	}
 
-	public static Role[] getArray() {
-		return new Role[]{A1, A2, A3, B1, B2, C1, C2};
+	public static Node[] getArray() {
+		return new Node[]{A1, A2, A3, B1, B2, C1, C2};
 	}
 
 	@Override

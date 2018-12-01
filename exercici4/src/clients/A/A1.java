@@ -1,6 +1,6 @@
 package clients.A;
 
-import models.Role;
+import models.Node;
 
 /**
  * @author Ajordat
@@ -9,7 +9,7 @@ import models.Role;
 public class A1 extends NodeA {
 
 	private A1() {
-		super(Role.A1);
+		super(Node.A1);
 	}
 
 	@Override

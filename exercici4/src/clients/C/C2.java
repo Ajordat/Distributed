@@ -1,22 +1,15 @@
 package clients.C;
 
-import models.BaseNode;
-import models.Role;
-import network.Frame;
+import models.Node;
 
 /**
  * @author Ajordat
  * @version 1.0
  **/
-public class C2 extends BaseNode {
+public class C2 extends NodeC {
 
 	private C2() {
-		super(Role.C2, true);
-	}
-
-	@Override
-	protected void action(Frame frame) {
-		System.out.println("asdf");
+		super(Node.C2);
 	}
 
 	public static void main(String[] args) {

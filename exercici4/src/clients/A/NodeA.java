@@ -2,7 +2,7 @@ package clients.A;
 
 import models.BaseNode;
 import models.FileHandler;
-import models.Role;
+import models.Node;
 import models.TransactionResults;
 import network.Frame;
 
@@ -17,19 +17,19 @@ public abstract class NodeA extends BaseNode {
 	private FileHandler fileHandler;
 	private int transactionsCounter;
 	private String transactionsData;
-	private Role lowerNode;
+	private Node lowerNode;
 
-	NodeA(Role role, Role lowerNode) {
-		super(role, true);
-		this.fileHandler = new FileHandler(role.toString() + ".log");
+	NodeA(Node node, Node lowerNode) {
+		super(node, true);
+		this.fileHandler = new FileHandler(node.toString() + ".log");
 		this.lowerNode = lowerNode;
 
 		this.transactionsCounter = 0;
 		this.transactionsData = "";
 	}
 
-	NodeA(Role role) {
-		this(role, null);
+	NodeA(Node node) {
+		this(node, null);
 	}
 
 	private TransactionResults solveClientRequest(String data) {
@@ -81,7 +81,7 @@ public abstract class NodeA extends BaseNode {
 
 				if (results.hasWriteResults()) {
 
-					for (Role node : this.role.getBroadcastNodes()) {
+					for (Node node : this.node.getBroadcastNodes()) {
 						response = request(node.getPort(), Frame.Type.POST_AA, results.getWriteResult());
 
 						if (response.getType() == Frame.Type.REPLY_AA && (boolean) response.getData())

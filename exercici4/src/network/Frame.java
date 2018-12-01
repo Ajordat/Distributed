@@ -28,6 +28,9 @@ public class Frame implements Serializable {
 		POST_AB,
 		REPLY_BA,
 
+		POST_BC,
+		REPLY_CB,
+
 		REPLY_KO
 	}
 

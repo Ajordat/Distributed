@@ -1,4 +1,4 @@
-package clients.B;
+package clients.C;
 
 import models.BaseNode;
 import models.FileHandler;
@@ -11,10 +11,10 @@ import java.io.IOException;
  * @author Ajordat
  * @version 1.0
  **/
-public abstract class NodeB extends BaseNode {
-	FileHandler fileHandler;
+public abstract class NodeC extends BaseNode {
+	private FileHandler fileHandler;
 
-	NodeB(Node node) {
+	NodeC(Node node) {
 		super(node, true);
 		this.fileHandler = new FileHandler(node.toString() + ".log");
 	}
@@ -67,9 +67,10 @@ public abstract class NodeB extends BaseNode {
 				reply(Frame.Type.REPLY_CLIENT, readTransactions);
 				break;
 
-			case POST_AB:
+			case POST_BC:
+				logger.debug("Received [" + frame.getData() + "]");
 				solveWriteRequest((String) frame.getData());
-				reply(Frame.Type.REPLY_BA, true);
+				reply(Frame.Type.REPLY_CB, true);
 				break;
 
 			default:
