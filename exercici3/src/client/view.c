@@ -8,8 +8,8 @@
 #if USE_NCURSES
 
 inline void WIN_create() {
-
-	display = initscr();
+	initscr();
+	display = newwin(LINES - 2, 0, 0, 0);
 	input = newwin(2, 0, LINES - 2, 0);
 }
 

@@ -81,12 +81,11 @@ void chatRoutine(char *host, char *author) {
 
 	WIN_create();
 	scrollok(display, true);
-	refresh();
 	//box(input, 0, 0);
 
 
 	WIN_write(display, "Welcome to this global chat!\n");
-	refresh();
+	WIN_refresh(display);
 
 	pthread_create(&thread, NULL, initChat, NULL);
 
