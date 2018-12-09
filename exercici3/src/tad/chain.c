@@ -61,12 +61,14 @@ Chain CHAIN_getMessagesFromId(Chain h, int id) {
 }
 
 void CHAIN_toString(Chain h) {
-	char aux[LENGTH];
+	char aux[LENGTH + 1];
 	print("toString\n");
 	sprintf(aux, "CHAIN string: %d\n", h.length);
 	print(aux);
 	for (u_int i = 0; i < h.length; i++) {
-		sprintf(aux, "%d ~> %d - %s: %s\n", h.list[i].id, h.list[i].timestamp, h.list[i].author, h.list[i].data);
+		sprintf(aux, "%d ~> %d - %s: ", h.list[i].id, h.list[i].timestamp, h.list[i].author);
+		print(aux);
+		sprintf(aux, "%s\n", h.list[i].data);
 		print(aux);
 	}
 	print("end\n");

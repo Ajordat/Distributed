@@ -14,7 +14,6 @@ char parseCli(char *author) {
 
 	WIN_write(input, "> ");
 
-	memset(string, '\0', LENGTH);
 	WIN_read(input, string);
 
 	timestamp = time(NULL);
