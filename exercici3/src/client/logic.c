@@ -33,9 +33,9 @@ char parseCli(char *author) {
 	return 0;
 }
 
-int updateChat(int timestamp) {
+int updateChat(int event_id) {
 
-	Chain *history = requestChat(timestamp);
+	Chain *history = requestChat(event_id);
 
 	if (history != NULL) {
 		for (u_int i = 0; i < history->length; i++)
@@ -44,21 +44,21 @@ int updateChat(int timestamp) {
 		if (history->length > 0) {
 			wrefresh(display);
 			wrefresh(input);
-			timestamp = history->list[history->length - 1].timestamp;
+			event_id = history->list[history->length - 1].id;
 		}
 
 		CHAIN_destroy(history);
 	}
 
-	return timestamp ?: 0;
+	return event_id ? : 0;
 }
 
 void *initChat(void *_) {
 	UNUSED(_);
-	int timestamp = 0;
+	int event_id = 0;
 
 	while (1) {
-		timestamp = updateChat(timestamp);
+		event_id = updateChat(event_id);
 		sleep(1);
 	}
 }
@@ -127,10 +127,10 @@ int writeMessage(Message msg) {
 	return 0;
 }
 
-Chain *requestChat(int timestamp) {
+Chain *requestChat(int id) {
 	Chain *response;
 
-	response = getchat_1(&timestamp, clnt);
+	response = getchat_1(&id, clnt);
 	if (response == (Chain *) NULL) {
 		clnt_perror(clnt, "request chat");
 		return NULL;

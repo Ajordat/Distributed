@@ -18,7 +18,7 @@ inline void WIN_destroy() {
 }
 
 inline void WIN_read(WINDOW *w, char *string) {
-	wgetstr(w, string);
+	wgetnstr(w, string, LENGTH);
 }
 
 

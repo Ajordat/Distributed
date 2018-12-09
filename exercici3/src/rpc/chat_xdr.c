@@ -5,27 +5,21 @@
 
 #include "chat_lib.h"
 
-bool_t
-xdr_Message (XDR *xdrs, Message *objp)
-{
-	register int32_t *buf;
+bool_t xdr_Message(XDR *xdrs, Message *objp) {
 
-	 if (!xdr_string (xdrs, &objp->data, ~0))
-		 return FALSE;
-	 if (!xdr_string (xdrs, &objp->author, ~0))
-		 return FALSE;
-	 if (!xdr_int (xdrs, &objp->timestamp))
-		 return FALSE;
+	if (!xdr_int(xdrs, &objp->id))
+		return FALSE;
+	if (!xdr_string(xdrs, &objp->data, (u_int) ~0))
+		return FALSE;
+	if (!xdr_string(xdrs, &objp->author, (u_int) ~0))
+		return FALSE;
+	if (!xdr_int(xdrs, &objp->timestamp))
+		return FALSE;
 	return TRUE;
 }
 
-bool_t
-xdr_Chain (XDR *xdrs, Chain *objp)
-{
-	register int32_t *buf;
-
-	 if (!xdr_array (xdrs, (char **)&objp->list, (u_int *) &objp->length, ~0,
-		sizeof (Message), (xdrproc_t) xdr_Message))
-		 return FALSE;
+bool_t xdr_Chain(XDR *xdrs, Chain *objp) {
+	if (!xdr_array(xdrs, (char **) &objp->list, &objp->length, (u_int) ~0, sizeof(Message), (xdrproc_t) xdr_Message))
+		return FALSE;
 	return TRUE;
 }

@@ -1,4 +1,5 @@
 struct Message {
+	int id;
 	string data<>;
 	string author<>;
 	int timestamp;

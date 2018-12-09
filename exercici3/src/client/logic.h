@@ -24,7 +24,7 @@ void destroyRpc();
 
 int writeMessage(Message msg);
 
-Chain *requestChat(int timestamp);
+Chain *requestChat(int id);
 
 
 #endif

@@ -15,13 +15,13 @@ Chain history;
 
 Chain CHAIN_create();
 
-void CHAIN_add(Chain *, Message);
+int CHAIN_add(Chain *, Message);
 
 Message CHAIN_createMessage(int timestamp, char *msg, char *author);
 
 void CHAIN_destroyMessage(Message *);
 
-Chain CHAIN_getMessagesFromTimestamp(Chain, int timestamp);
+Chain CHAIN_getMessagesFromId(Chain h, int id);
 
 void CHAIN_toString(Chain);
 
