@@ -23,7 +23,15 @@ public class Frame implements Serializable {
 		REPLY_CLIENT,
 
 		POST_AA,
-		REPLY_AA
+		REPLY_AA,
+
+		POST_AB,
+		REPLY_BA,
+
+		POST_BC,
+		REPLY_CB,
+
+		REPLY_KO
 	}
 
 	public Frame(Type type, Object data) {
@@ -44,7 +52,4 @@ public class Frame implements Serializable {
 		return data;
 	}
 
-/*	public boolean isKO() {
-		return this.type == Type.REPLY_KO;
-	}*/
 }

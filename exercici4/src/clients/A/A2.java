@@ -1,27 +1,21 @@
 package clients.A;
 
-import models.BaseNode;
-import models.Role;
-import network.Frame;
+import models.Node;
 
 /**
  * @author Ajordat
  * @version 1.0
  **/
-public class A2 extends BaseNode {
+public class A2 extends NodeA {
 
 	private A2() {
-		super(Role.A2, true);
-	}
-
-	@Override
-	protected void action(Frame frame) {
-		System.out.println("asdf");
+		super(Node.A2, Node.B1);
 	}
 
 	public static void main(String[] args) {
-		A2 node = new A2();
+		NodeA node = new A2();
 
 		node.startRoutine();
 	}
+
 }
