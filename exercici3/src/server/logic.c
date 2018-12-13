@@ -27,7 +27,7 @@ void initServer() {
 int *writemsg_1_svc(Message *argp, struct svc_req *rqstp) {
 	UNUSED(rqstp);
 
-	static int result;
+	static int event_id;
 	char *line;
 	size_t length = 10 + 1 + strlen(argp->author) + 1 + strlen(argp->data) + 1;
 
@@ -42,11 +42,9 @@ int *writemsg_1_svc(Message *argp, struct svc_req *rqstp) {
 	free(line);
 	close(fd);
 
-	CHAIN_add(&history, *argp);
+	event_id = CHAIN_add(&history, *argp);
 
-	result = 0;
-
-	return &result;
+	return &event_id;
 }
 
 Chain *getchat_1_svc(int *argp, struct svc_req *rqstp) {
@@ -58,7 +56,7 @@ Chain *getchat_1_svc(int *argp, struct svc_req *rqstp) {
 	sprintf(aux, "Received timestamp: %d\n", *argp);
 	debug(aux);
 
-	result = CHAIN_getMessagesFromTimestamp(history, *argp);
+	result = CHAIN_getMessagesFromId(history, *argp);
 	CHAIN_toString(result);
 
 	return &result;

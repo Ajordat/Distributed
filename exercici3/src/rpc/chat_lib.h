@@ -15,6 +15,7 @@ extern "C" {
 
 
 struct Message {
+	int id;
 	char *data;
 	char *author;
 	int timestamp;

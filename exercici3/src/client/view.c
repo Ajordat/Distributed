@@ -8,8 +8,8 @@
 #if USE_NCURSES
 
 inline void WIN_create() {
-
-	display = initscr();
+	initscr();
+	display = newwin(LINES - 2, 0, 0, 0);
 	input = newwin(2, 0, LINES - 2, 0);
 }
 
@@ -18,7 +18,9 @@ inline void WIN_destroy() {
 }
 
 inline void WIN_read(WINDOW *w, char *string) {
-	wgetstr(w, string);
+	memset(string, '\0', LENGTH);
+	wgetnstr(w, string, LENGTH);
+	string[LENGTH - 1] = '\0';
 }
 
 
@@ -31,15 +33,18 @@ inline void WIN_refresh(WINDOW *w) {
 }
 
 void WIN_writeMsg(WINDOW *w, Message msg) {
-	char aux[LENGTH], time[20];
+	char aux[LENGTH + 1], time[20];
 	time_t ts = msg.timestamp;
 
 	strftime(time, 20, "%d-%m-%y %H:%M", localtime(&ts));
-	sprintf(aux,"%s ~ %s > %s\n", time, msg.author, msg.data);
+	sprintf(aux, "%s ~ %s > ", time, msg.author);
+	WIN_write(w, aux);
+	sprintf(aux, "%s\n", msg.data);
 	WIN_write(w, aux);
 }
 
 void WIN_cleanLine(WINDOW *w) {
+	wclrtoeol(w);
 	wmove(w, getcury(w) - 1, 0);
 	wclrtoeol(w);
 }

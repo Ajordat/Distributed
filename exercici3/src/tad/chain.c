@@ -16,7 +16,7 @@ Chain CHAIN_create() {
 	return h;
 }
 
-void CHAIN_add(Chain *h, Message msg) {
+int CHAIN_add(Chain *h, Message msg) {
 
 	h->list = realloc(h->list, (h->length + 1) * sizeof(Message));
 
@@ -25,9 +25,11 @@ void CHAIN_add(Chain *h, Message msg) {
 
 	strcpy(h->list[h->length].data, msg.data);
 	strcpy(h->list[h->length].author, msg.author);
-	h->list[h->length].timestamp = msg.timestamp;
 
-	h->length++;
+	h->list[h->length].timestamp = msg.timestamp;
+	h->list[h->length].id = msg.id ? : (int) h->length + 1;
+
+	return ++h->length;
 }
 
 Message CHAIN_createMessage(int timestamp, char *msg, char *author) {
@@ -47,24 +49,26 @@ void CHAIN_destroyMessage(Message *msg) {
 	free(msg->data);
 }
 
-Chain CHAIN_getMessagesFromTimestamp(Chain h, int timestamp) {
+Chain CHAIN_getMessagesFromId(Chain h, int id) {
 	u_int index;
 	Chain messages = CHAIN_create();
 
 	for (index = 0; index < h.length; index++)
-		if (h.list[index].timestamp > timestamp)
+		if (h.list[index].id > id)
 			CHAIN_add(&messages, h.list[index]);
 
 	return messages;
 }
 
 void CHAIN_toString(Chain h) {
-	char aux[LENGTH];
+	char aux[LENGTH + 1];
 	print("toString\n");
 	sprintf(aux, "CHAIN string: %d\n", h.length);
 	print(aux);
 	for (u_int i = 0; i < h.length; i++) {
-		sprintf(aux, "~> %d - %s: %s\n", h.list[i].timestamp, h.list[i].author, h.list[i].data);
+		sprintf(aux, "%d ~> %d - %s: ", h.list[i].id, h.list[i].timestamp, h.list[i].author);
+		print(aux);
+		sprintf(aux, "%s\n", h.list[i].data);
 		print(aux);
 	}
 	print("end\n");
@@ -83,7 +87,7 @@ void CHAIN_destroy(Chain *h) {
 
 void CHAIN_loadFromFile(Chain *h, char *filename) {
 	char c;
-	int fd, index;
+	int fd, index, id = 0;
 	Message msg;
 	char time[15], aux[LENGTH];
 
@@ -136,6 +140,8 @@ void CHAIN_loadFromFile(Chain *h, char *filename) {
 		}
 		msg.data = malloc(strlen(aux) + 1);
 		strcpy(msg.data, aux);
+
+		msg.id = ++id;
 
 		debug("data parsed\n");
 
