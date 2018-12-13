@@ -1,6 +1,6 @@
 package clients.A;
 
-import models.Node;
+import models.NodeRole;
 
 /**
  * @author Ajordat
@@ -9,11 +9,8 @@ import models.Node;
 public class A1 extends NodeA {
 
 	private A1() {
-		super(Node.A1);
+		super(NodeRole.A1);
 	}
-
-	@Override
-	void afterTransaction(String transactions) {}
 
 	public static void main(String[] args) {
 		NodeA node = new A1();

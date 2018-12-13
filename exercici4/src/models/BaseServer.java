@@ -21,13 +21,11 @@ public abstract class BaseServer {
 	protected ServerSocket server;
 	protected ObjectInputStream inputStream;
 	protected ObjectOutputStream outputStream;
-	protected boolean isOn;
 	private static final String LOOPBACK_IP = "127.0.0.1";
 	protected int port;
 
 
 	protected BaseServer() {
-		this.isOn = false;
 		this.inputStream = null;
 		this.outputStream = null;
 	}

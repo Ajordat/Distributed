@@ -2,7 +2,7 @@ package clients.A;
 
 import models.BaseNode;
 import models.FileHandler;
-import models.Node;
+import models.NodeRole;
 import models.TransactionResults;
 import network.Frame;
 
@@ -16,19 +16,17 @@ public abstract class NodeA extends BaseNode {
 	private final static int MAX_TRANSACTIONS = 2;
 	private FileHandler fileHandler;
 	private int transactionsCounter;
-	private String transactionsData;
-	private Node lowerNode;
+	private NodeRole lowerNode;
 
-	NodeA(Node node, Node lowerNode) {
+	NodeA(NodeRole node, NodeRole lowerNode) {
 		super(node, true);
 		this.fileHandler = new FileHandler(node.toString() + ".log");
 		this.lowerNode = lowerNode;
 
 		this.transactionsCounter = 0;
-		this.transactionsData = "";
 	}
 
-	NodeA(Node node) {
+	NodeA(NodeRole node) {
 		this(node, null);
 	}
 
@@ -68,41 +66,42 @@ public abstract class NodeA extends BaseNode {
 		return new TransactionResults(writeTransactions.toString(), readTransactions.toString());
 	}
 
+	private void notifyReplicationNodes(String writeResults) throws IOException, ClassNotFoundException {
+		Frame response;
+
+		for (NodeRole node : this.node.getBroadcastNodes()) {
+			response = request(node.getPort(), Frame.Type.POST_AA, writeResults);
+
+			if (response.getType() == Frame.Type.REPLY_AA && (boolean) response.getData())
+				logger.debug("NODE " + node + " CONFIRMED");
+			else
+				logger.debug("NODE " + node + " DECLINED");
+		}
+	}
+
 	@Override
 	protected void action(Frame frame) throws IOException, ClassNotFoundException {
-		Frame response;
-		TransactionResults results;
-		String writeTransactions;
 
 		switch (frame.getType()) {
 
 			case REQUEST_CLIENT:
-				results = solveClientRequest((String) frame.getData());
+				TransactionResults results = solveClientRequest((String) frame.getData());
 
-				if (results.hasWriteResults()) {
-
-					for (Node node : this.node.getBroadcastNodes()) {
-						response = request(node.getPort(), Frame.Type.POST_AA, results.getWriteResult());
-
-						if (response.getType() == Frame.Type.REPLY_AA && (boolean) response.getData())
-							logger.debug("NODE " + node + " CONFIRMED");
-						else
-							logger.debug("NODE " + node + " DECLINED");
-					}
-				}
+				if (results.hasWriteResults())
+					this.notifyReplicationNodes(results.getWriteResult());
 
 				reply(Frame.Type.REPLY_CLIENT, results.getReadResult());
 
-				afterTransaction(results.getWriteResult());
+				afterTransaction();
 				break;
 
 			case POST_AA:
-				writeTransactions = (String) frame.getData();
+				String writeTransactions = (String) frame.getData();
 				logger.print(writeTransactions);
 				solveClientRequest(writeTransactions);
 				reply(Frame.Type.REPLY_AA, true);
 
-				afterTransaction(writeTransactions);
+				afterTransaction();
 				break;
 
 			default:
@@ -111,16 +110,24 @@ public abstract class NodeA extends BaseNode {
 
 	}
 
-	void afterTransaction(String transactions) throws IOException, ClassNotFoundException {
+	private void afterTransaction() throws IOException, ClassNotFoundException {
 		Frame response;
 
-		if (!this.transactionsData.isEmpty())
-			this.transactionsData += ',';
-		this.transactionsData += transactions;
 		this.transactionsCounter++;
 
 		if (transactionsCounter >= MAX_TRANSACTIONS) {
-			response = request(lowerNode.getPort(), Frame.Type.POST_AB, transactionsData);
+
+			if (lowerNode == null)
+				return;
+
+			String msg = fileHandler.toTransaction();
+
+			if (msg.isEmpty())
+				return;
+
+			logger.debug("Updating node " + lowerNode + " with transaction [" + msg + "]");
+
+			response = request(lowerNode.getPort(), Frame.Type.POST_AB, msg);
 
 			if (response.getType() == Frame.Type.REPLY_BA && (boolean) response.getData()) {
 				logger.debug(lowerNode + " confirmed the transaction");
@@ -129,7 +136,6 @@ public abstract class NodeA extends BaseNode {
 			}
 
 			this.transactionsCounter = 0;
-			this.transactionsData = "";
 		}
 	}
 

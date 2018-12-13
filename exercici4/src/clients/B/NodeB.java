@@ -2,7 +2,7 @@ package clients.B;
 
 import models.BaseNode;
 import models.FileHandler;
-import models.Node;
+import models.NodeRole;
 import network.Frame;
 
 import java.io.IOException;
@@ -12,9 +12,10 @@ import java.io.IOException;
  * @version 1.0
  **/
 public abstract class NodeB extends BaseNode {
-	FileHandler fileHandler;
+	private FileHandler fileHandler;
+	private static final int REFRESH_SECONDS = 10;
 
-	NodeB(Node node) {
+	NodeB(NodeRole node) {
 		super(node, true);
 		this.fileHandler = new FileHandler(node.toString() + ".log");
 	}
@@ -57,6 +58,36 @@ public abstract class NodeB extends BaseNode {
 		}
 	}
 
+	@SuppressWarnings("InfiniteLoopStatement")
+	void startNotifyThread(NodeRole[] nodes) {
+
+		(new Thread(() -> {
+			String transaction;
+
+			try {
+				while (true) {
+					Thread.sleep(REFRESH_SECONDS * 1000);
+
+					transaction = fileHandler.toTransaction();
+
+					if (transaction.isEmpty())
+						continue;
+
+					for (NodeRole node : nodes) {
+						try {
+							request(node.getPort(), Frame.Type.POST_BC, transaction);
+						} catch (IOException | ClassNotFoundException e) {
+							logger.error("Couldn't reach node " + node + ".");
+						}
+					}
+
+				}
+			} catch (InterruptedException e) {
+				logger.error("Sleep interrupted. NodeC communication stopped.");
+			}
+		})).start();
+	}
+
 	@Override
 	protected void action(Frame frame) throws IOException {
 
@@ -68,8 +99,8 @@ public abstract class NodeB extends BaseNode {
 				break;
 
 			case POST_AB:
-				solveWriteRequest((String) frame.getData());
 				reply(Frame.Type.REPLY_BA, true);
+				solveWriteRequest((String) frame.getData());
 				break;
 
 			default:

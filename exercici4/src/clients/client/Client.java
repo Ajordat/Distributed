@@ -2,7 +2,7 @@ package clients.client;
 
 import models.BaseServer;
 import models.Logger;
-import models.Node;
+import models.NodeRole;
 import network.Frame;
 
 import java.io.File;
@@ -24,7 +24,7 @@ public class Client extends BaseServer {
 		this.logger = new Logger(false, "CLI");
 	}
 
-	private Node decideNode(int layer) {
+	private NodeRole decideNode(int layer) {
 		int pos;
 
 		if (layer == 0)
@@ -34,12 +34,12 @@ public class Client extends BaseServer {
 		else
 			pos = ThreadLocalRandom.current().nextInt(5, 7);
 
-		return Node.getArray()[pos];
+		return NodeRole.getArray()[pos];
 	}
 
-	private void startRoutine() {
+	private void startFileTransactions() {
 		Scanner scanner = null;
-		Node targetNode;
+		NodeRole targetNode;
 		String line, transaction, target;
 
 		try {
@@ -84,7 +84,7 @@ public class Client extends BaseServer {
 		scanner.close();
 	}
 
-	private void printTransactionResults(Node target, String transaction, String response) {
+	private void printTransactionResults(NodeRole target, String transaction, String response) {
 		String[] actions = transaction.split(",(?![^(]*\\))");
 		String[] results = response.split(",(?![^(]*\\))");
 		int i = 0, index, variable, value;
@@ -111,8 +111,13 @@ public class Client extends BaseServer {
 	}
 
 	public static void main(String[] args) {
+		if (args.length == 0) {
+			System.err.println("Missing transactions file.");
+			System.exit(1);
+		}
+
 		Client c = new Client(args[0]);
 
-		c.startRoutine();
+		c.startFileTransactions();
 	}
 }

@@ -1,9 +1,6 @@
 package clients.B;
 
-import models.Node;
-import network.Frame;
-
-import java.io.IOException;
+import models.NodeRole;
 
 /**
  * @author Ajordat
@@ -12,42 +9,13 @@ import java.io.IOException;
 public class B2 extends NodeB {
 
 	private B2() {
-		super(Node.B2);
-	}
-
-	private void startNotifyThread() {
-
-		(new Thread(() -> {
-			String transaction;
-
-			try {
-				while (true) {
-					Thread.sleep(10000);
-
-					transaction = fileHandler.toTransaction();
-
-					if (transaction.isEmpty())
-						continue;
-
-					for (Node node : new Node[]{Node.C1, Node.C2}) {
-						try {
-							request(node.getPort(), Frame.Type.POST_BC, transaction);
-						} catch (IOException | ClassNotFoundException e) {
-							logger.error("Couldn't reach node " + node + ".");
-						}
-					}
-
-				}
-			} catch (InterruptedException e) {
-				logger.error("Sleep interrupted. NodeC communication stopped.");
-			}
-		})).start();
+		super(NodeRole.B2);
 	}
 
 	public static void main(String[] args) {
 		B2 node = new B2();
 
-		node.startNotifyThread();
+		node.startNotifyThread(new NodeRole[]{NodeRole.C1, NodeRole.C2});
 		node.startRoutine();
 	}
 }

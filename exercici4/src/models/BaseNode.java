@@ -10,14 +10,14 @@ import java.net.Socket;
  * @version 1.0
  **/
 public abstract class BaseNode extends BaseServer {
-	protected Node node;
+	protected NodeRole node;
 	protected Logger logger;
 
-	public BaseNode(Node node) {
+	public BaseNode(NodeRole node) {
 		this(node, false);
 	}
 
-	public BaseNode(Node node, boolean verbose) {
+	public BaseNode(NodeRole node, boolean verbose) {
 		this.node = node;
 		this.port = node.getPort();
 		this.logger = new Logger(verbose, node.toString());
@@ -30,10 +30,8 @@ public abstract class BaseNode extends BaseServer {
 			System.exit(1);
 		}
 
-		this.isOn = true;
-
 		try {
-			while (this.isOn) {
+			while (!this.server.isClosed()) {
 				logger.debug("Waiting new connections...");
 				Socket client = this.server.accept();
 				logger.debug("New connection received on port " + this.port);
@@ -45,8 +43,17 @@ public abstract class BaseNode extends BaseServer {
 				logger.debug("New connection finished.");
 			}
 		} catch (IOException | ClassNotFoundException e) {
-			this.isOn = false;
 			logger.error("Server failure on port " + node.getPort());
+			if (server != null && !server.isClosed()) {
+				try {
+					server.close();
+				} catch (IOException ignored) {
+					logger.error("Caught exception on server close.");
+				} finally {
+					logger.error("Server closed.");
+				}
+			} else
+				logger.error("Server is down.");
 			System.exit(1);
 		}
 

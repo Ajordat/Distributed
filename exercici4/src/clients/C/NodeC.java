@@ -2,7 +2,7 @@ package clients.C;
 
 import models.BaseNode;
 import models.FileHandler;
-import models.Node;
+import models.NodeRole;
 import network.Frame;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.io.IOException;
 public abstract class NodeC extends BaseNode {
 	private FileHandler fileHandler;
 
-	NodeC(Node node) {
+	NodeC(NodeRole node) {
 		super(node, true);
 		this.fileHandler = new FileHandler(node.toString() + ".log");
 	}
@@ -69,8 +69,8 @@ public abstract class NodeC extends BaseNode {
 
 			case POST_BC:
 				logger.debug("Received [" + frame.getData() + "]");
-				solveWriteRequest((String) frame.getData());
 				reply(Frame.Type.REPLY_CB, true);
+				solveWriteRequest((String) frame.getData());
 				break;
 
 			default:
