@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Classe per a transmetre trames entre sockets.
- *
+ * <p>
  * Conté un Type que identifica la trama que és i un Object per a recuperar la informació transmesa, que pot variar
  * segons Type.
  *

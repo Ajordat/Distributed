@@ -1,6 +1,4 @@
-package models;
-
-import network.Frame;
+package network;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

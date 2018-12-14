@@ -1,6 +1,6 @@
 package clients.C;
 
-import models.BaseNode;
+import network.BaseNode;
 import models.FileHandler;
 import models.NodeRole;
 import network.Frame;

@@ -1,12 +1,15 @@
 package clients.A;
 
-import models.BaseNode;
 import models.FileHandler;
 import models.NodeRole;
 import models.TransactionResults;
+import network.BaseNode;
 import network.Frame;
+import network.WebSocketEndpoint;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+
 
 /**
  * @author Ajordat
@@ -17,6 +20,7 @@ public abstract class NodeA extends BaseNode {
 	private FileHandler fileHandler;
 	private int transactionsCounter;
 	private NodeRole lowerNode;
+	private WebSocketEndpoint webSocketEndpoint;
 
 	NodeA(NodeRole node, NodeRole lowerNode) {
 		super(node, true);
@@ -24,6 +28,12 @@ public abstract class NodeA extends BaseNode {
 		this.lowerNode = lowerNode;
 
 		this.transactionsCounter = 0;
+
+		this.webSocketEndpoint = new WebSocketEndpoint(
+				new InetSocketAddress("localhost", node.getWsPort()),
+				logger
+		);
+		this.webSocketEndpoint.start();
 	}
 
 	NodeA(NodeRole node) {

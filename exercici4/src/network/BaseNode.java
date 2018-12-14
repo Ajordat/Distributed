@@ -1,6 +1,7 @@
-package models;
+package network;
 
-import network.Frame;
+import models.Logger;
+import models.NodeRole;
 
 import java.io.IOException;
 import java.net.Socket;

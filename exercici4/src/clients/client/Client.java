@@ -1,6 +1,6 @@
 package clients.client;
 
-import models.BaseServer;
+import network.BaseServer;
 import models.Logger;
 import models.NodeRole;
 import network.Frame;
