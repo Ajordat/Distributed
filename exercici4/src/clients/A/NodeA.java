@@ -16,7 +16,7 @@ import java.net.InetSocketAddress;
  * @version 1.0
  **/
 public abstract class NodeA extends BaseNode {
-	private final static int MAX_TRANSACTIONS = 2;
+	private final static int MAX_TRANSACTIONS = 3;
 	private FileHandler fileHandler;
 	private int transactionsCounter;
 	private NodeRole lowerNode;
@@ -57,6 +57,8 @@ public abstract class NodeA extends BaseNode {
 				value = Integer.parseInt(action.substring(index + 1, action.length() - 1));
 				logger.print("Write " + value + " on variable " + variable + ".");
 				fileHandler.setValue(variable, value);
+
+				webSocketEndpoint.updateNodeStatus(variable, value);
 
 				if (!writeTransactions.toString().isEmpty())
 					writeTransactions.append(',');

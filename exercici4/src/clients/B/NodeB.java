@@ -4,8 +4,10 @@ import network.BaseNode;
 import models.FileHandler;
 import models.NodeRole;
 import network.Frame;
+import network.WebSocketEndpoint;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 /**
  * @author Ajordat
@@ -14,10 +16,17 @@ import java.io.IOException;
 public abstract class NodeB extends BaseNode {
 	private FileHandler fileHandler;
 	private static final int REFRESH_SECONDS = 10;
+	private WebSocketEndpoint webSocketEndpoint;
 
 	NodeB(NodeRole node) {
 		super(node, true);
 		this.fileHandler = new FileHandler(node.toString() + ".log");
+
+		this.webSocketEndpoint = new WebSocketEndpoint(
+				new InetSocketAddress("localhost", node.getWsPort()),
+				logger
+		);
+		this.webSocketEndpoint.start();
 	}
 
 	private String solveReadRequest(String data) {
@@ -55,6 +64,8 @@ public abstract class NodeB extends BaseNode {
 			value = Integer.parseInt(action.substring(index + 1, action.length() - 1));
 			logger.print("Write " + value + " on variable " + variable + ".");
 			fileHandler.setValue(variable, value);
+
+			webSocketEndpoint.updateNodeStatus(variable, value);
 		}
 	}
 
