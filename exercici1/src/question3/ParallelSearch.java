@@ -1,5 +1,8 @@
 package question3;
 
+import utils.ArrayFactory;
+
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -26,11 +29,11 @@ public class ParallelSearch{
 	}
 
 	public static void main(String[] args) {
-		int[] numbers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+		int[] numbers = ArrayFactory.create(100, ArrayFactory.Method.ASCENDING, 0);
 
 		ParallelSearch ps = new ParallelSearch(numbers);
 
-		ps.startSearch(3);
+		ps.startSearch(80);
 	}
 
 }

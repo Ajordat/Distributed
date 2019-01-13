@@ -35,11 +35,12 @@ public class SearchThread implements Runnable {
 			value = array[i];
 			if (this.value == value) {
 				long endTime = System.nanoTime();
+//				System.out.print((endTime - this.startTime) / 1000);
 				System.out.println("[Thread " + id + "] Found value " + value + " on index " + i + " in " + ((endTime - this.startTime) / 1000) + "us.");
 				return;
 			}
 		}
 
-		System.out.println("[Thread " + id + "] Couldn't find value " + this.value + ".");
+//		System.out.println("[Thread " + id + "] Couldn't find value " + this.value + ".");
 	}
 }

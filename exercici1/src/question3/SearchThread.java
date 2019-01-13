@@ -7,42 +7,47 @@ import java.util.LinkedList;
  * @author Ajordat
  * @version 1.0
  **/
-public class SearchThread implements Logger, Runnable {
+public class SearchThread implements Runnable {
 
 	private int id;
-	private Direction direction;
-	private LinkedList<Integer> list;
 	private Iterator<Integer> iterator;
 	private int value;
+	private static boolean found = false;
+	private Logger logger;
 
 	public enum Direction {
 		LEFT, RIGHT
 	}
 
-	public SearchThread(int id, int value, Direction direction, LinkedList<Integer> list) {
+	SearchThread(int id, int value, Direction direction, LinkedList<Integer> list) {
 		this.id = id;
-		this.direction = direction;
-		this.list = list;
 		this.value = value;
+		this.logger = new Logger(id);
 
-		if (this.direction == Direction.RIGHT)
-			this.iterator = this.list.iterator();
+		if (direction == Direction.RIGHT)
+			this.iterator = list.iterator();
 		else
-			this.iterator = this.list.descendingIterator();
+			this.iterator = list.descendingIterator();
+
 	}
 
 	@Override
 	public void run() {
-		int value;
 
 		while (this.iterator.hasNext()) {
-			value = this.iterator.next();
 
-			if (this.value == value) {
-				this.log(this.id, Status.FOUND, value);
+			if (this.value == this.iterator.next()) {
+				synchronized (this) {
+					if (!found) {
+						found = true;
+						logger.print("Found value " + this.value + " first.");
+					} else {
+						logger.print("Found value " + this.value);
+					}
+				}
 				return;
 			}
 		}
-		this.log(this.id, Status.NOT_FOUND, this.value);
+		logger.print("Couldn't find value " + this.value);
 	}
 }

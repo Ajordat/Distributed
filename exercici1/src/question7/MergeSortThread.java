@@ -5,29 +5,25 @@ package question7;
  * @author Ajordat
  * @version 1.0
  **/
-public class SearchThread implements Runnable {
+public class MergeSortThread implements Runnable {
 
 	private int id;
 	private static int[] array;
 	private int begin;
 	private int end;
 
-	SearchThread(int id, int begin, int end) {
+	MergeSortThread(int id, int begin, int end) {
 		this.id = id;
 		this.begin = begin;
 		this.end = end;
 	}
 
-	SearchThread(int[] array) {
-		SearchThread.array = array;
+	MergeSortThread(int[] array) {
+		MergeSortThread.array = array;
 	}
 
 	static void setArray(int[] array) {
-		SearchThread.array = array;
-	}
-
-	static int[] getArray() {
-		return SearchThread.array;
+		MergeSortThread.array = array;
 	}
 
 	void mergeSort(int begin, int end) {
@@ -72,8 +68,8 @@ public class SearchThread implements Runnable {
 
 		if (size > 2) {
 
-			Thread t1 = new Thread(new SearchThread(this.id * 10 + 1, this.begin, middle - 1));
-			Thread t2 = new Thread(new SearchThread(this.id * 10 + 2, middle, this.end));
+			Thread t1 = new Thread(new MergeSortThread(this.id * 10 + 1, this.begin, middle - 1));
+			Thread t2 = new Thread(new MergeSortThread(this.id * 10 + 2, middle, this.end));
 
 			t1.start();
 			t2.start();
