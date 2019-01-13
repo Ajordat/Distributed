@@ -18,12 +18,6 @@ public class ProcessA extends BaseServer {
 		this.port = Role.HWA.getPort();
 	}
 
-	private void startLWProcesses() {
-		(new Thread(new LightWeightA(Role.LWA1))).start();
-		(new Thread(new LightWeightA(Role.LWA2))).start();
-		(new Thread(new LightWeightA(Role.LWA3))).start();
-	}
-
 	private void action(Frame frame) throws IOException, ClassNotFoundException {
 
 		switch (frame.getType()) {
@@ -70,8 +64,6 @@ public class ProcessA extends BaseServer {
 
 		if (!this.open())
 			return;
-
-		this.startLWProcesses();
 
 		this.isOn = true;
 

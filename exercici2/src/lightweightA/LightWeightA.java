@@ -1,5 +1,7 @@
+package lightweightA;
+
 import models.BaseServer;
-import models.RAMutex;
+import models.CentMutex;
 import models.Role;
 import network.Frame;
 import network.LamportData;
@@ -11,18 +13,18 @@ import java.net.Socket;
  * @author Ajordat
  * @version 1.0
  **/
-public class LightWeightB extends BaseServer implements Runnable {
+public class LightWeightA extends BaseServer implements Runnable {
 
-	private RAMutex mutex;
+	private CentMutex mutex;
 
-	LightWeightB(Role role) {
+	LightWeightA(Role role) {
 		this.role = role;
 		this.port = role.getPort();
 		//this.setVerbose();
-		this.mutex = new RAMutex(role);
+		this.mutex = new CentMutex(role);
 	}
 
-	private void action(Frame frame) throws IOException, ClassNotFoundException {
+	private void action(Frame frame) throws IOException {
 		verbose("Received request with header " + frame.getType());
 
 		switch (frame.getType()) {
@@ -39,7 +41,7 @@ public class LightWeightB extends BaseServer implements Runnable {
 
 						mutex.releaseCS();
 
-						Frame ans = this.request(Role.HWB.getPort(), Frame.Type.RETURN_TOKEN);
+						Frame ans = this.request(Role.HWA.getPort(), Frame.Type.RETURN_TOKEN);
 						if (ans.getType() == Frame.Type.REPLY_KO)
 							throw new IOException("HeavyWeight server couldn't process the petition.");
 
@@ -52,9 +54,8 @@ public class LightWeightB extends BaseServer implements Runnable {
 				return;
 
 			case REQUEST_CS:
-			case ACKNOWLEDGE:
+			case RELEASE_CS:
 				LamportData data = (LamportData) frame.getData();
-				verbose("Received " + data.getData() + " from "+ data.getSrc());
 				mutex.setStreams(inputStream, outputStream);
 				mutex.handleMsg(frame.getType(), data.getData(), data.getSrc());
 				return;

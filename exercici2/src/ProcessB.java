@@ -1,3 +1,4 @@
+import lightweightB.LightWeightB;
 import models.BaseServer;
 import models.Role;
 import network.Frame;
@@ -16,11 +17,6 @@ public class ProcessB extends BaseServer {
 	private ProcessB() {
 		this.role = Role.HWB;
 		this.port = Role.HWB.getPort();
-	}
-
-	private void startLWProcesses() {
-		(new Thread(new LightWeightB(Role.LWB1))).start();
-		(new Thread(new LightWeightB(Role.LWB2))).start();
 	}
 
 	private void action(Frame frame) throws IOException, ClassNotFoundException {
@@ -68,8 +64,6 @@ public class ProcessB extends BaseServer {
 
 		if (!this.open())
 			return;
-
-		this.startLWProcesses();
 
 		this.isOn = true;
 
